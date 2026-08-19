@@ -1889,13 +1889,16 @@ app-bundle: release
 # MISC
 #############################################################################
 
-clean: clean-debug clean-release
+clean: clean-debug clean-release clean-app
 
 clean-debug:
 	$(MAKE) clean2 BUILDDIR=debug CFLAGS="$(DEBUG_CFLAGS)"
 
 clean-release:
 	$(MAKE) clean2 BUILDDIR=release CFLAGS="$(DEBUG_CFLAGS)"
+
+clean-app:
+	-rm -rf $(APP_BUNDLE) $(DATA_DIR) $(DATA_ZIP) /tmp/$(APP_NAME).iconset
 
 clean2:
 	-rm -f \
@@ -1909,4 +1912,4 @@ clean2:
 	$(ZAERO_OBS) \
 	$(REF_VK_OBJS)
 
-.PHONY: help all debug release clean clean-debug clean-release debug-xcode release-xcode clean-xcode app
+.PHONY: help all debug release clean clean-debug clean-release clean-app debug-xcode release-xcode clean-xcode app
