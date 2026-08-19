@@ -1843,9 +1843,7 @@ APP_NAME = vkQuake2
 APP_BUNDLE = $(APP_NAME).app
 APP_RESOURCES = $(APP_BUNDLE)/Contents/Resources
 APP_MACOS = $(APP_BUNDLE)/Contents/MacOS
-ICON_SRC = /Users/sunneva/Development/Games/vkQuake2/macos/vquake2.icns
-ICON_FALLBACK = /Users/sunneva/Development/Games/vkQuake2/macos/quake2.icns
-ICON_PNG = /Users/sunneva/Development/Games/vkQuake2/vkQuake2.png
+ICON_SRC = /Users/sunneva/Development/Games/vkQuake2/macos/quake2.icns
 DATA_URL = https://archive.org/download/quake-2-complete/Quake%202.zip
 DATA_ZIP = quake2-complete.zip
 DATA_DIR = Quake\ 2
@@ -1880,25 +1878,7 @@ app-bundle: release
 	@printf '#!/bin/bash\nDIR="$$(cd "$$(dirname "$$0")" && pwd)"\ncd "$$DIR/../Resources"\nexec "$$DIR/quake2-real" "$$@"\n' > $(APP_MACOS)/quake2
 	@chmod +x $(APP_MACOS)/quake2
 	@echo "--- Setting up icon ---"
-	@if [ -f "$(ICON_SRC)" ]; then \
-		cp "$(ICON_SRC)" $(APP_RESOURCES)/$(APP_NAME).icns; \
-	elif [ -f "$(ICON_FALLBACK)" ]; then \
-		cp "$(ICON_FALLBACK)" $(APP_RESOURCES)/$(APP_NAME).icns; \
-	else \
-		mkdir -p /tmp/$(APP_NAME).iconset && \
-		sips -z 16 16 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_16x16.png >/dev/null && \
-		sips -z 32 32 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_16x16@2x.png >/dev/null && \
-		sips -z 32 32 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_32x32.png >/dev/null && \
-		sips -z 64 64 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_32x32@2x.png >/dev/null && \
-		sips -z 128 128 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_128x128.png >/dev/null && \
-		sips -z 256 256 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_128x128@2x.png >/dev/null && \
-		sips -z 256 256 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_256x256.png >/dev/null && \
-		sips -z 512 512 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_256x256@2x.png >/dev/null && \
-		sips -z 512 512 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_512x512.png >/dev/null && \
-		sips -z 1024 1024 $(ICON_PNG) --out /tmp/$(APP_NAME).iconset/icon_512x512@2x.png >/dev/null && \
-		iconutil -c icns /tmp/$(APP_NAME).iconset -o $(APP_RESOURCES)/$(APP_NAME).icns && \
-		rm -rf /tmp/$(APP_NAME).iconset; \
-	fi
+	@cp "$(ICON_SRC)" $(APP_RESOURCES)/$(APP_NAME).icns
 	@echo "--- Creating Info.plist ---"
 	@printf '<?xml version="1.0" encoding="UTF-8"?>\n<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n<plist version="1.0">\n<dict>\n\t<key>CFBundleExecutable</key>\n\t<string>quake2</string>\n\t<key>CFBundleIconFile</key>\n\t<string>$(APP_NAME).icns</string>\n\t<key>CFBundleIdentifier</key>\n\t<string>org.vkquake2.quake2</string>\n\t<key>CFBundleName</key>\n\t<string>$(APP_NAME)</string>\n\t<key>CFBundleDisplayName</key>\n\t<string>Quake II</string>\n\t<key>CFBundlePackageType</key>\n\t<string>APPL</string>\n\t<key>CFBundleSignature</key>\n\t<string>????</string>\n\t<key>CFBundleVersion</key>\n\t<string>1.5.10</string>\n\t<key>CFBundleShortVersionString</key>\n\t<string>1.5.10</string>\n\t<key>LSMinimumSystemVersion</key>\n\t<string>13.0</string>\n\t<key>NSHighResolutionCapable</key>\n\t<true/>\n</dict>\n</plist>\n' > $(APP_BUNDLE)/Contents/Info.plist
 	@echo "=== $(APP_BUNDLE) built successfully ==="
