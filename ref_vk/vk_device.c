@@ -58,6 +58,19 @@ static void getBestPhysicalDevice(const VkPhysicalDevice *devices, int preferred
 	VkPhysicalDeviceProperties deviceProperties;
 	VkPhysicalDeviceFeatures deviceFeatures;
 	uint32_t queueFamilyCount = 0;
+	qboolean discreteDeviceAvailable = false;
+
+	// are there any discrete GPUs on the system?
+	for (int i = 0; i < count; ++i)
+	{
+		vkGetPhysicalDeviceProperties(devices[i], &deviceProperties);
+		discreteDeviceAvailable = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+
+		if (discreteDeviceAvailable)
+		{
+			break;
+		}
+	}
 
 	for (int i = 0; i < count; ++i)
 	{
@@ -70,10 +83,10 @@ static void getBestPhysicalDevice(const VkPhysicalDevice *devices, int preferred
 		
 		ri.Con_Printf(PRINT_ALL, "...selected GPU %s\n", deviceProperties.deviceName);
 
-		// prefer discrete GPU but if it's the only one available then don't be picky
-		// also - if the user specifies a preferred device, select it
-		qboolean bestProperties = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
-		if (preferredIdx == i || (bestProperties && preferredIdx < 0) || count == 1)
+		// pick the first discrete GPU that we can find or the first integrated GPU if no discrete GPUs are available
+		// if the user specifies a preferred device index - select it instead
+		qboolean isDiscrete = deviceProperties.deviceType == VK_PHYSICAL_DEVICE_TYPE_DISCRETE_GPU;
+		if (preferredIdx == i || (isDiscrete && preferredIdx < 0) || (!discreteDeviceAvailable && preferredIdx < 0) || count == 1)
 		{
 			uint32_t formatCount = 0;
 			uint32_t presentModesCount = 0;
@@ -232,18 +245,6 @@ static VkResult createLogicalDevice(void)
 		.queueCreateInfoCount = numQueues,
 		.pQueueCreateInfos = queueCreateInfo
 	};
-
-#if VK_HEADER_VERSION > 101
-	const char *validationLayers[] = { "VK_LAYER_KHRONOS_validation" };
-#else
-	const char *validationLayers[] = { "VK_LAYER_LUNARG_standard_validation" };
-#endif
-
-	if (vk_validation->value)
-	{
-		deviceCreateInfo.enabledLayerCount = sizeof(validationLayers)/sizeof(validationLayers[0]);
-		deviceCreateInfo.ppEnabledLayerNames = validationLayers;
-	}
 
 	return vkCreateDevice(vk_device.physical, &deviceCreateInfo, NULL, &vk_device.logical);
 }
