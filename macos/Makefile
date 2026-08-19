@@ -1855,7 +1855,8 @@ app-bundle: release
 	@rm -rf $(APP_BUNDLE)
 	@mkdir -p $(APP_MACOS) $(APP_RESOURCES)
 	@echo "--- Downloading game data ---"
-	@if [ ! -f $(DATA_ZIP) ]; then curl -L -o $(DATA_ZIP) "$(DATA_URL)"; fi
+	@rm -f $(DATA_ZIP)
+	@curl -L -A "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36" --fail -o $(DATA_ZIP) "$(DATA_URL)"
 	@echo "--- Extracting game data ---"
 	@rm -rf $(DATA_DIR)
 	@unzip -q $(DATA_ZIP)
