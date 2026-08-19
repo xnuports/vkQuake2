@@ -1845,10 +1845,10 @@ APP_RESOURCES = $(APP_BUNDLE)/Contents/Resources
 APP_MACOS = $(APP_BUNDLE)/Contents/MacOS
 ICON_SRC = /Users/sunneva/Development/Games/vkQuake2/macos/vquake2.icns
 ICON_FALLBACK = /Users/sunneva/Development/Games/vkQuake2/macos/quake2.icns
-ICON_PNG = /Users/sunneva/Development/Games/vkQuake2/macos/vkQuake2/quake2.png
+ICON_PNG = /Users/sunneva/Development/Games/vkQuake2/vkQuake2.png
 DATA_URL = https://archive.org/download/quake-2-complete/Quake%202.zip
 DATA_ZIP = quake2-complete.zip
-DATA_DIR = quake2-complete
+DATA_DIR = Quake\ 2
 
 app: release app-bundle
 
